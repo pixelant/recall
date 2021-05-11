@@ -1,5 +1,5 @@
 {
-  "name": "ttn/tea",
+  "name": "pixelant/recall",
   "type": "typo3-cms-extension",
   "description": "TYPO3 extension that remembers settings from a different request using a hash. E.g. recall settings or data used in the main request within an eID request.",
   "keywords": [
