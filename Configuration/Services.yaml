@@ -1,5 +1,13 @@
 services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Pixelant\Recall\:
+    resource: '../Classes/*'
+
   cache.recall_data:
     class: TYPO3\CMS\Core\Cache\Frontend\FrontendInterface
-    factory: ['@TYPO3\CMS\Core\Cache\CacheManager', 'getCache']
-    arguments: ['recall_data']
+    factory: [ '@TYPO3\CMS\Core\Cache\CacheManager', 'getCache' ]
+    arguments: [ 'recall_data' ]
