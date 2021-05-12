@@ -2,7 +2,7 @@
 $EM_CONF[$_EXTKEY] = [
     'title' => 'Selective Recall',
     'description' => 'Remember settings from a different request using a hash. E.g. recall settings or data used in the main request within an eID request.',
-    'version' => '1.0.0',
+    'version' => '1.0.0-beta',
     'category' => 'services',
     'constraints' => [
         'depends' => [
@@ -10,7 +10,7 @@ $EM_CONF[$_EXTKEY] = [
             'typo3' => '9.5.0-10.99.99',
         ],
     ],
-    'state' => 'stable',
+    'state' => 'beta',
     'uploadfolder' => false,
     'createDirs' => '',
     'author' => 'Pixelant.net',
