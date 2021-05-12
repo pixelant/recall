@@ -5,12 +5,15 @@ namespace Pixelant\Recall\Service;
 
 use Pixelant\Recall\Domain\Repository\DataRepository;
 use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Cache\Frontend\FrontendInterface;
+use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Get and set data for recall.
  */
-class RecallService
+class RecallService implements SingletonInterface
 {
     /**
      * @var FrontendInterface
@@ -25,13 +28,13 @@ class RecallService
     /**
      * RecallService constructor.
      *
-     * @param FrontendInterface $cache
      * @param DataRepository $repository
+     * @param FrontendInterface $cache
      */
-    public function __construct(FrontendInterface $cache, DataRepository $repository)
+    public function __construct(DataRepository $repository = null, FrontendInterface $cache = null)
     {
-        $this->cache = $cache;
-        $this->repository = $repository;
+        $this->cache = $cache ?? GeneralUtility::makeInstance(CacheManager::class)->getCache('recall_data');
+        $this->repository = $repository ?? GeneralUtility::makeInstance(DataRepository::class);
     }
 
     /**
