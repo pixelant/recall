@@ -41,7 +41,44 @@ $settings = $this->recallService->get($recallHash)['settings'];
 
 You now have access to the settings from the original request without having to initialize configuration or think about page IDs.
 
-Note: You can of course also supply less information than the entire settings array.
+**Tip:** You can of course also supply less information than the entire settings array.
+
+## Clean Up
+
+The recall data is stored in the database, and the hash is unique for the data. If you change your data a lot, you'll quickly fill up the database.
+
+Run the cleanup command frequently (or set up a Scheduler task):
+
+```
+vendor/bin/typo3 recall:cleanup
+```
+
+Help screen:
+
+```
+Description:
+  Removes old recall data.
+
+Usage:
+  recall:cleanup [<age>]
+
+Arguments:
+  age                   The minimum age of records to remove. Default is sessionTimeout or 86400 seconds. [default: 6000]
+
+Options:
+  -h, --help            Display this help message
+  -q, --quiet           Do not output any message
+  -V, --version         Display this application version
+      --ansi            Force ANSI output
+      --no-ansi         Disable ANSI output
+  -n, --no-interaction  Do not ask any interactive question
+  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Help:
+  Removes recall data older than [age] seconds. The default age is the same as $GLOBALS['TYPO3_CONF_VARS']['FE']['sessionTimeout'] or (if that's not set) 86400 seconds.
+```
+
+**Please note:** The timestamp for each recall data record is updated each time it is requested, so frequently-used records won't be deleted.
 
 ## Bugs, contribution, and feature requests
 
