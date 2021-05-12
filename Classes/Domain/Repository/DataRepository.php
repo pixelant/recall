@@ -117,7 +117,7 @@ class DataRepository implements SingletonInterface
     /**
      * Remove records older than timestamp.
      *
-     * @param int $timestamp
+     * @param int $timestamp Unix timestamp of the date before which records can be deleted.
      */
     public function removeOlderThan(int $timestamp): void
     {
