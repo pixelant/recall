@@ -64,13 +64,11 @@ class RecallService implements SingletonInterface
      */
     public function set(array $data): string
     {
-        $serializedData = serialize($data);
-
-        $hash = $this->repository->set($serializedData);
+        $hash = $this->repository->set($data);
 
         // Ignore cache if it's using database. It won't be any faster.
         if (!$this->cache->getBackend() instanceof Typo3DatabaseBackend) {
-            $this->cache->set($hash, $serializedData);
+            $this->cache->set($hash, $this->repository->get($hash));
         }
 
         return $hash;

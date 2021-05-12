@@ -5,14 +5,22 @@ namespace Pixelant\Recall\Domain\Repository;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository for tx_recall_data.
  */
-class DataRepository
+class DataRepository implements SingletonInterface
 {
     public const TABLE_NAME = 'tx_recall_data';
+
+    /**
+     * Data cache. Key is the hash.
+     *
+     * @var array
+     */
+    protected $dataCache = [];
 
     /**
      * Get data for hash.
@@ -22,6 +30,10 @@ class DataRepository
      */
     public function get(string $hash): ?string
     {
+        if (isset($this->dataCache[$hash])) {
+            return $this->dataCache[$hash];
+        }
+
         $queryBuilder = $this->getQueryBuilder();
 
         $data = $queryBuilder
@@ -35,18 +47,28 @@ class DataRepository
             return null;
         }
 
-        return $data;
+        $data['data'] = unserialize($data['data']);
+
+        $this->dataCache[$hash] = $data;
+
+        return $this->dataCache[$hash];
     }
 
     /**
      * Set data and return hash.
      *
-     * @param string $data
+     * @param array $data
      * @return string The data hash.
      */
-    public function set(string $data): string
+    public function set(array $data): string
     {
-        $hash = md5($data);
+        $serializedData = serialize($data);
+
+        $hash = md5($serializedData);
+
+        if (isset($this->dataCache[$hash]) || $this->exists($hash)) {
+            return $hash;
+        }
 
         $queryBuilder = $this->getQueryBuilder();
 
@@ -54,12 +76,25 @@ class DataRepository
             ->insert(self::TABLE_NAME)
             ->values([
                 'hash' => $hash,
-                'data' => $data,
+                'data' => $serializedData,
                 'tstamp' => time()
             ])
             ->execute();
 
+        $this->dataCache[$hash] = $data;
+
         return $hash;
+    }
+
+    /**
+     * Returns true if the hash exists.
+     *
+     * @param string $hash
+     * @return bool
+     */
+    public function exists(string $hash): bool
+    {
+        return $this->get($hash) !== null;
     }
 
     /**
@@ -75,6 +110,8 @@ class DataRepository
             ->delete(self::TABLE_NAME)
             ->where($queryBuilder->expr()->eq('hash', $queryBuilder->createNamedParameter($hash)))
             ->execute();
+
+        unset($this->dataCache[$hash]);
     }
 
     /**
@@ -90,6 +127,8 @@ class DataRepository
             ->delete(self::TABLE_NAME)
             ->where($queryBuilder->expr()->lt('tstamp', $queryBuilder->createNamedParameter($timestamp)))
             ->execute();
+
+        $this->dataCache = [];
     }
 
     /**
