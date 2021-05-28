@@ -28,7 +28,7 @@ class DataRepository implements SingletonInterface
      * @param string $hash
      * @return string|null
      */
-    public function get(string $hash): ?string
+    public function get(string $hash): ?array
     {
         if (isset($this->dataCache[$hash])) {
             return $this->dataCache[$hash];
