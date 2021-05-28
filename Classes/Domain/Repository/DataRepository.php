@@ -47,9 +47,7 @@ class DataRepository implements SingletonInterface
             return null;
         }
 
-        $data['data'] = unserialize($data['data']);
-
-        $this->dataCache[$hash] = $data;
+        $this->dataCache[$hash] = unserialize($data);
 
         return $this->dataCache[$hash];
     }
