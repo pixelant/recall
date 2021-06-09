@@ -26,7 +26,7 @@ class DataRepository implements SingletonInterface
      * Get data for hash.
      *
      * @param string $hash
-     * @return string|null
+     * @return array|null
      */
     public function get(string $hash): ?array
     {

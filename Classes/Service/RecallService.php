@@ -53,7 +53,7 @@ class RecallService implements SingletonInterface
 
         $this->repository->updateTimestamp($hash);
 
-        return unserialize($data);
+        return $data;
     }
 
     /**
